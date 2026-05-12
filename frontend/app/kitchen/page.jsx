@@ -3,9 +3,10 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import Navbar from '../../components/shared/Navbar';
+import { motion, AnimatePresence } from 'framer-motion';
 import OrderQueue from '../../components/kitchen/OrderQueue';
 import useAuth from '../../hooks/useAuth';
+import { Bell } from 'lucide-react';
 
 export default function KitchenPage() {
   const { auth, loading: authLoading } = useAuth();
@@ -40,14 +41,29 @@ export default function KitchenPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar title="Kitchen" />
-
-      {newOrder && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 bg-kitchen text-background px-6 py-3 rounded-lg animate-pulse z-50">
-          New Order - Table {newOrder.table?.number}
+    <div>
+      {/* Header */}
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-display text-stone-900 mb-1">Order Queue</h2>
+          <p className="text-stone-500">Manage and prepare orders</p>
         </div>
-      )}
+      </div>
+
+      {/* New Order Notification */}
+      <AnimatePresence>
+        {newOrder && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed top-4 left-1/2 -translate-x-1/2 bg-emerald-600 text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-3 z-50"
+          >
+            <Bell size={20} />
+            <span className="font-medium">New Order - Table {newOrder.table?.number}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <OrderQueue onNewOrder={newOrder} />
     </div>

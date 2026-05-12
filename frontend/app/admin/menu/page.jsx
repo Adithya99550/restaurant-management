@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Edit2, Trash2, X } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, Package } from 'lucide-react';
 import api from '../../../lib/api';
 
 export default function MenuManagement() {
@@ -86,33 +86,42 @@ export default function MenuManagement() {
   const filteredItems = filterCategory === 'All' ? menuItems : menuItems.filter(item => item.category === filterCategory);
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-display font-bold text-foreground">Menu Management</h1>
+    <div>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-3xl font-display text-stone-900 mb-2">Menu</h1>
+          <p className="text-stone-500">Manage your restaurant menu</p>
+        </div>
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90"
+          className="flex items-center gap-2 bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-medium hover:bg-indigo-700 transition-colors"
         >
           <Plus size={18} />
           Add Item
         </button>
       </div>
 
-      <div className="flex gap-2 mb-6 overflow-x-auto">
+      {/* Category Filter */}
+      <div className="flex gap-2 mb-8 overflow-x-auto pb-2">
         <button
           onClick={() => setFilterCategory('All')}
-          className={`px-4 py-2 rounded-full text-sm whitespace-nowrap ${
-            filterCategory === 'All' ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground hover:bg-muted'
+          className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+            filterCategory === 'All'
+              ? 'bg-indigo-100 text-indigo-700'
+              : 'bg-white text-stone-500 hover:bg-stone-50 border border-stone-100'
           }`}
         >
-          All
+          All Items
         </button>
         {categories.map(cat => (
           <button
             key={cat}
             onClick={() => setFilterCategory(cat)}
-            className={`px-4 py-2 rounded-full text-sm whitespace-nowrap ${
-              filterCategory === cat ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground hover:bg-muted'
+            className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+              filterCategory === cat
+                ? 'bg-indigo-100 text-indigo-700'
+                : 'bg-white text-stone-500 hover:bg-stone-50 border border-stone-100'
             }`}
           >
             {cat}
@@ -121,36 +130,54 @@ export default function MenuManagement() {
       </div>
 
       {loading ? (
-        <div className="text-center text-muted-foreground">Loading...</div>
+        <div className="flex items-center justify-center h-64">
+          <div className="w-8 h-8 border-2 border-indigo-200 border-t-indigo-600 rounded-full animate-spin" />
+        </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredItems.map(item => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {filteredItems.map((item, index) => (
             <motion.div
               key={item.id}
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className={`bg-card border rounded-xl p-4 ${!item.isAvailable ? 'opacity-60' : ''}`}
+              transition={{ delay: index * 0.05 }}
+              className={`bg-white rounded-2xl border border-stone-100 p-5 shadow-sm transition-all hover:shadow-md ${!item.isAvailable ? 'opacity-60' : ''}`}
             >
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <h3 className="font-semibold text-foreground">{item.name}</h3>
-                  <p className="text-sm text-muted-foreground">{item.category}</p>
+              <div className="flex items-start justify-between mb-3">
+                <div className="w-12 h-12 bg-stone-50 rounded-xl flex items-center justify-center">
+                  <Package className="w-6 h-6 text-stone-400" />
                 </div>
-                <span className="text-lg font-bold text-primary">₹{item.price}</span>
+                <span className="text-xl font-display font-bold text-stone-900">₹{item.price}</span>
               </div>
-              {item.description && <p className="text-sm text-muted-foreground mb-3">{item.description}</p>}
-              <div className="flex items-center justify-between mt-3 pt-3 border-t border-border">
+
+              <h3 className="font-medium text-stone-900 mb-1">{item.name}</h3>
+              <p className="text-sm text-stone-400 mb-3">{item.category}</p>
+              {item.description && (
+                <p className="text-xs text-stone-500 line-clamp-2 mb-4">{item.description}</p>
+              )}
+
+              <div className="flex items-center justify-between pt-3 border-t border-stone-100">
                 <button
                   onClick={() => handleToggleAvailability(item)}
-                  className={`text-xs px-2 py-1 rounded ${item.isAvailable ? 'bg-green-500/20 text-green-500' : 'bg-red-500/20 text-red-500'}`}
+                  className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${
+                    item.isAvailable
+                      ? 'bg-emerald-50 text-emerald-600'
+                      : 'bg-stone-100 text-stone-500'
+                  }`}
                 >
                   {item.isAvailable ? 'Available' : 'Unavailable'}
                 </button>
-                <div className="flex gap-2">
-                  <button onClick={() => openEdit(item)} className="p-1 text-muted-foreground hover:text-primary">
+                <div className="flex gap-1">
+                  <button
+                    onClick={() => openEdit(item)}
+                    className="p-2 text-stone-400 hover:text-stone-600 hover:bg-stone-50 rounded-lg transition-colors"
+                  >
                     <Edit2 size={16} />
                   </button>
-                  <button onClick={() => handleDelete(item.id)} className="p-1 text-muted-foreground hover:text-red-500">
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    className="p-2 text-stone-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                  >
                     <Trash2 size={16} />
                   </button>
                 </div>
@@ -160,6 +187,7 @@ export default function MenuManagement() {
         </div>
       )}
 
+      {/* Modal */}
       <AnimatePresence>
         {showModal && (
           <>
@@ -167,43 +195,43 @@ export default function MenuManagement() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/60 z-40"
+              className="fixed inset-0 bg-stone-900/20 backdrop-blur-sm z-40"
               onClick={closeModal}
             />
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
               className="fixed inset-0 z-50 flex items-center justify-center p-4"
             >
-              <div className="bg-card border border-border rounded-xl p-6 w-full max-w-md">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-display font-bold text-foreground">
-                    {editingItem ? 'Edit Item' : 'Add Item'}
+              <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-display text-stone-900">
+                    {editingItem ? 'Edit Item' : 'Add New Item'}
                   </h2>
-                  <button onClick={closeModal} className="text-muted-foreground hover:text-foreground">
-                    <X size={24} />
+                  <button onClick={closeModal} className="p-2 text-stone-400 hover:text-stone-600 hover:bg-stone-50 rounded-lg">
+                    <X size={20} />
                   </button>
                 </div>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <label className="block text-sm text-muted-foreground mb-1">Name</label>
+                    <label className="block text-sm font-medium text-stone-700 mb-1.5">Name</label>
                     <input
                       type="text"
                       value={formData.name}
                       onChange={e => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full bg-background border border-border rounded-lg px-3 py-2 text-foreground"
+                      className="input"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-muted-foreground mb-1">Category</label>
+                    <label className="block text-sm font-medium text-stone-700 mb-1.5">Category</label>
                     <input
                       type="text"
                       value={formData.category}
                       onChange={e => setFormData({ ...formData, category: e.target.value })}
                       list="categories"
-                      className="w-full bg-background border border-border rounded-lg px-3 py-2 text-foreground"
+                      className="input"
                       required
                     />
                     <datalist id="categories">
@@ -211,29 +239,29 @@ export default function MenuManagement() {
                     </datalist>
                   </div>
                   <div>
-                    <label className="block text-sm text-muted-foreground mb-1">Price</label>
+                    <label className="block text-sm font-medium text-stone-700 mb-1.5">Price (₹)</label>
                     <input
                       type="number"
                       value={formData.price}
                       onChange={e => setFormData({ ...formData, price: e.target.value })}
-                      className="w-full bg-background border border-border rounded-lg px-3 py-2 text-foreground"
+                      className="input"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-muted-foreground mb-1">Description (optional)</label>
+                    <label className="block text-sm font-medium text-stone-700 mb-1.5">Description</label>
                     <textarea
                       value={formData.description}
                       onChange={e => setFormData({ ...formData, description: e.target.value })}
-                      className="w-full bg-background border border-border rounded-lg px-3 py-2 text-foreground"
+                      className="input"
                       rows={2}
                     />
                   </div>
                   <button
                     type="submit"
-                    className="w-full bg-primary text-primary-foreground py-2 rounded-lg hover:bg-primary/90"
+                    className="w-full bg-indigo-600 text-white py-3 rounded-xl font-medium hover:bg-indigo-700 transition-colors"
                   >
-                    {editingItem ? 'Update' : 'Add'} Item
+                    {editingItem ? 'Save Changes' : 'Add Item'}
                   </button>
                 </form>
               </div>

@@ -1,15 +1,76 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================
+   PREMIUM MINIMAL DESIGN SYSTEM
+   Restaurant Management Application
+   ============================================ */
+
 :root {
-  --background: #0A0A0A;
-  --card: #111111;
-  --border: #1F1F1F;
-  --foreground: #FAFAFA;
-  --muted-foreground: #6B7280;
+  /* Base - Light Premium Theme */
+  --background: #FAFAF9;
+  --surface: #FFFFFF;
+  --surface-elevated: #FFFFFF;
+
+  /* Neutrals */
+  --foreground: #1C1917;
+  --foreground-muted: #57534E;
+  --foreground-subtle: #A8A29E;
+
+  /* Borders */
+  --border: #E7E5E4;
+  --border-subtle: #F5F5F4;
+
+  /* Role Colors */
+  /* Admin - Sophisticated Slate/Indigo */
+  --admin: #6366F1;
+  --admin-light: #EEF2FF;
+  --admin-foreground: #4338CA;
+
+  /* Waiter - Warm Amber/Orange */
+  --waiter: #F59E0B;
+  --waiter-light: #FEF3C7;
+  --waiter-foreground: #D97706;
+
+  /* Kitchen - Fresh Green */
+  --kitchen: #10B981;
+  --kitchen-light: #D1FAE5;
+  --kitchen-foreground: #059669;
+
+  /* Cashier - Teal/Blue */
+  --cashier: #14B8A6;
+  --cashier-light: #CCFBF1;
+  --cashier-foreground: #0D9488;
+
+  /* Customer - Neutral */
+  --customer: #78716C;
+  --customer-light: #F5F5F4;
+  --customer-foreground: #57534E;
+
+  /* Semantic */
+  --success: #10B981;
+  --warning: #F59E0B;
+  --error: #EF4444;
+  --info: #3B82F6;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.07);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.08);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  /* Font Families */
+  --font-display: 'Playfair Display', serif;
+  --font-body: 'Outfit', sans-serif;
 }
 
 * {
@@ -24,35 +85,116 @@ body {
   overflow-x: hidden;
   background: var(--background);
   color: var(--foreground);
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Syne', sans-serif;
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
-/* Custom scrollbar */
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+/* Text Gradient */
+.text-gradient {
+  background: linear-gradient(135deg, var(--foreground) 0%, var(--foreground-muted) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glass Effect */
+.glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Card Hover */
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Button Press */
+.btn-press {
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-press:active {
+  transform: scale(0.97);
+}
+
+/* Fade In Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Stagger Animation */
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.1s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.2s; }
+.stagger-5 { animation-delay: 0.25s; }
+
+/* Shimmer Loading */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--border-subtle) 25%, var(--border) 50%, var(--border-subtle) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* ============================================
+   CUSTOM SCROLLBAR
+   ============================================ */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--background);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
   background: var(--border);
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--muted-foreground);
+  background: var(--foreground-subtle);
 }
 
-/* Focus ring for accessibility */
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
 *:focus-visible {
-  outline: 2px solid #F59E0B;
+  outline: 2px solid var(--admin);
   outline-offset: 2px;
 }
 
@@ -65,4 +207,104 @@ h1, h2, h3, h4, h5, h6 {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ============================================
+   ROLE-BASED STYLES
+   ============================================ */
+
+/* Admin Role */
+.role-admin {
+  --role: var(--admin);
+  --role-light: var(--admin-light);
+  --role-foreground: var(--admin-foreground);
+}
+
+/* Waiter Role */
+.role-waiter {
+  --role: var(--waiter);
+  --role-light: var(--waiter-light);
+  --role-foreground: var(--waiter-foreground);
+}
+
+/* Kitchen Role */
+.role-kitchen {
+  --role: var(--kitchen);
+  --role-light: var(--kitchen-light);
+  --role-foreground: var(--kitchen-foreground);
+}
+
+/* Cashier Role */
+.role-cashier {
+  --role: var(--cashier);
+  --role-light: var(--cashier-light);
+  --role-foreground: var(--cashier-foreground);
+}
+
+/* Customer Role */
+.role-customer {
+  --role: var(--customer);
+  --role-light: var(--customer-light);
+  --role-foreground: var(--customer-foreground);
+}
+
+/* ============================================
+   COMPONENT BASE STYLES
+   ============================================ */
+
+/* Buttons */
+.btn-primary {
+  @apply px-5 py-2.5 rounded-lg font-medium transition-all duration-200;
+  background: var(--role, var(--admin));
+  color: white;
+}
+
+.btn-primary:hover {
+  @apply opacity-90;
+}
+
+.btn-primary:active {
+  @apply scale-[0.98];
+}
+
+/* Cards */
+.card {
+  @apply bg-white rounded-xl border border-gray-100;
+  box-shadow: var(--shadow-sm);
+}
+
+.card-elevated {
+  @apply bg-white rounded-xl border border-gray-100;
+  box-shadow: var(--shadow-md);
+}
+
+/* Inputs */
+.input {
+  @apply w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-gray-900;
+  @apply focus:border-[var(--role,var(--admin))] focus:ring-2 focus:ring-[var(--role-light,var(--admin-light))] focus:outline-none;
+  @apply transition-all duration-200;
+}
+
+.input::placeholder {
+  @apply text-gray-400;
+}
+
+/* Badges */
+.badge {
+  @apply inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium;
+}
+
+/* ============================================
+   RESPONSIVE HELPERS
+   ============================================ */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .animate-delay-100 { animation-delay: 100ms; }
+  .animate-delay-200 { animation-delay: 200ms; }
+  .animate-delay-300 { animation-delay: 300ms; }
+  .animate-delay-400 { animation-delay: 400ms; }
+  .animate-delay-500 { animation-delay: 500ms; }
 }

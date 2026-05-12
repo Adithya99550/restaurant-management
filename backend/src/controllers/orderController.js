@@ -61,7 +61,8 @@ const getOrdersByTable = async (req, res) => {
       where: { tableId: parseInt(tableId), status: { not: 'PAID' } },
       include: {
         orderItems: { include: { menuItem: true } },
-        waiter: true
+        waiter: true,
+        bill: true
       },
       orderBy: { createdAt: 'desc' }
     });
@@ -239,6 +240,60 @@ const deleteOrderItem = async (req, res) => {
   }
 };
 
+const customerAddItems = async (req, res) => {
+  try {
+    const { tableId } = req.params;
+    const { items } = req.body;
+
+    if (!items || !items.length) {
+      return res.status(400).json({ success: false, message: 'Items required' });
+    }
+
+    // Find active order for this table
+    const activeOrder = await prisma.order.findFirst({
+      where: {
+        tableId: parseInt(tableId),
+        status: { notIn: ['PAID', 'BILLED'] }
+      }
+    });
+
+    if (!activeOrder) {
+      return res.status(404).json({ success: false, message: 'No active order found for this table' });
+    }
+
+    const result = await prisma.$transaction(async (tx) => {
+      const order = await tx.order.update({
+        where: { id: activeOrder.id },
+        data: {
+          orderItems: {
+            create: items.map(item => ({
+              menuItemId: parseInt(item.menuItemId),
+              quantity: parseInt(item.quantity) || 1,
+              status: 'PENDING'
+            }))
+          }
+        },
+        include: {
+          orderItems: { include: { menuItem: true } },
+          table: true
+        }
+      });
+
+      return order;
+    });
+
+    req.io.emit('order_updated', result);
+    if (result.status !== 'PENDING') {
+      req.io.to('kitchen').emit('order_updated', result);
+    }
+
+    res.json({ success: true, data: result });
+  } catch (error) {
+    console.error('Customer add items error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
 module.exports = {
   createOrder,
   getOrdersByTable,
@@ -246,5 +301,6 @@ module.exports = {
   updateOrderStatus,
   addOrderItems,
   updateOrderItem,
-  deleteOrderItem
+  deleteOrderItem,
+  customerAddItems
 };

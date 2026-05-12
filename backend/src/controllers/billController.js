@@ -5,9 +5,22 @@ const prisma = new PrismaClient();
 const generateBill = async (req, res) => {
   try {
     const { orderId } = req.params;
+    const parsedOrderId = parseInt(orderId);
+
+    if (isNaN(parsedOrderId)) {
+      return res.status(400).json({ success: false, message: 'Invalid order ID' });
+    }
+
+    const existingBill = await prisma.bill.findUnique({
+      where: { orderId: parsedOrderId }
+    });
+
+    if (existingBill) {
+      return res.status(400).json({ success: false, message: 'Bill already exists for this order' });
+    }
 
     const order = await prisma.order.findUnique({
-      where: { id: parseInt(orderId) },
+      where: { id: parsedOrderId },
       include: {
         orderItems: { include: { menuItem: true } },
         table: true

@@ -47,7 +47,9 @@ export default function OrderPanel({ table, onClose, onUpdate }) {
     if (!currentOrder || items.length === 0) return;
     setLoading(true);
     try {
-      await api.patch(`/orders/${currentOrder.id}/status`, { status: 'CONFIRMED' });
+      // If order was served, send new items to kitchen again
+      const newStatus = orderStatus === 'SERVED' ? 'CONFIRMED' : 'CONFIRMED';
+      await api.patch(`/orders/${currentOrder.id}/status`, { status: newStatus });
       onUpdate();
       onClose();
     } catch (error) {
@@ -174,14 +176,14 @@ export default function OrderPanel({ table, onClose, onUpdate }) {
             Add Items
           </button>
 
-          {orderStatus === 'PENDING' && items.length > 0 && (
+          {(orderStatus === 'PENDING' || orderStatus === 'SERVED') && items.length > 0 && (
             <button
               onClick={handleSendToKitchen}
               disabled={loading}
               className="w-full bg-waiter text-background py-3 rounded-lg hover:bg-waiter/90 disabled:opacity-50"
             >
               <Send className="inline mr-2" size={18} />
-              Send to Kitchen
+              {orderStatus === 'SERVED' ? 'Send New Items to Kitchen' : 'Send to Kitchen'}
             </button>
           )}
 

@@ -14,7 +14,8 @@ const getAllTables = async (req, res) => {
           include: {
             orderItems: {
               include: { menuItem: true }
-            }
+            },
+            bill: true
           }
         }
       }

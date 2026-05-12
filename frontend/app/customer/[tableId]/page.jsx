@@ -90,7 +90,14 @@ export default function CustomerPage() {
         quantity: item.quantity,
       }));
 
-      const res = await api.post('/orders', { tableId: parseInt(tableId), items });
+      let res;
+      if (order) {
+        // Add items to existing order
+        res = await api.post(`/orders/table/${tableId}/items`, { items });
+      } else {
+        // Create new order
+        res = await api.post('/orders', { tableId: parseInt(tableId), items });
+      }
       setOrder(res.data.data);
       setCart([]);
       setShowCart(false);
@@ -135,7 +142,7 @@ export default function CustomerPage() {
         onRemoveFromCart={handleRemoveFromCart}
       />
 
-      {cart.length > 0 && !order && (
+      {cart.length > 0 && (
         <motion.div
           initial={{ y: 100 }}
           animate={{ y: 0 }}
@@ -199,7 +206,7 @@ export default function CustomerPage() {
               disabled={placingOrder}
               className="w-full bg-customer text-background py-3 rounded-xl font-semibold disabled:opacity-50"
             >
-              {placingOrder ? 'Placing Order...' : 'Place Order'}
+              {placingOrder ? 'Processing...' : order ? 'Add to Order' : 'Place Order'}
             </button>
           </motion.div>
         </motion.div>

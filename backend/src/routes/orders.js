@@ -10,7 +10,8 @@ const {
   updateOrderStatus,
   addOrderItems,
   updateOrderItem,
-  deleteOrderItem
+  deleteOrderItem,
+  customerAddItems
 } = require('../controllers/orderController');
 
 router.post('/', authMiddleware, roleMiddleware('WAITER', 'ADMIN'), socketMiddleware, createOrder);
@@ -20,5 +21,8 @@ router.patch('/:id/status', authMiddleware, roleMiddleware('WAITER', 'KITCHEN', 
 router.post('/:id/items', authMiddleware, roleMiddleware('WAITER', 'ADMIN'), socketMiddleware, addOrderItems);
 router.patch('/:id/items/:itemId', authMiddleware, roleMiddleware('WAITER', 'KITCHEN', 'ADMIN'), socketMiddleware, updateOrderItem);
 router.delete('/:id/items/:itemId', authMiddleware, roleMiddleware('WAITER', 'ADMIN'), socketMiddleware, deleteOrderItem);
+
+// Public route for customers to add items to existing order
+router.post('/table/:tableId/items', socketMiddleware, customerAddItems);
 
 module.exports = router;
