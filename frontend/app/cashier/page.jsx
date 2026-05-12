@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import Navbar from '../../components/shared/Navbar';
 import ActiveTables from '../../components/cashier/ActiveTables';
 import BillModal from '../../components/cashier/BillModal';
 import RevenueCard from '../../components/cashier/RevenueCard';
@@ -77,11 +76,9 @@ export default function CashierPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar title="Cashier Dashboard" />
-
-      <main className="max-w-7xl mx-auto p-6 space-y-10">
-        <RevenueCard />
+    <div className="max-w-7xl mx-auto p-6 space-y-10">
+      <h1 className="text-2xl font-display font-bold text-foreground">Cashier Dashboard</h1>
+      <RevenueCard />
 
         {billingTables.length > 0 && (
           <motion.div 
@@ -142,7 +139,6 @@ export default function CashierPage() {
             />
           )}
         </div>
-      </main>
 
       <AnimatePresence>
         {selectedTable && (

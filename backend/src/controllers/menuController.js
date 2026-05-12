@@ -44,4 +44,36 @@ const createMenuItem = async (req, res) => {
   }
 };
 
-module.exports = { getAllMenuItems, getMenuByCategory, createMenuItem };
+const updateMenuItem = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, category, price, description, isAvailable } = req.body;
+
+    const menuItem = await prisma.menuItem.update({
+      where: { id: parseInt(id) },
+      data: { name, category, price, description, isAvailable }
+    });
+
+    res.json({ success: true, data: menuItem });
+  } catch (error) {
+    console.error('Update menu item error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+const deleteMenuItem = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await prisma.menuItem.delete({
+      where: { id: parseInt(id) }
+    });
+
+    res.json({ success: true, message: 'Menu item deleted' });
+  } catch (error) {
+    console.error('Delete menu item error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+module.exports = { getAllMenuItems, getMenuByCategory, createMenuItem, updateMenuItem, deleteMenuItem };

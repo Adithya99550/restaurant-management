@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Navbar from '../../components/shared/Navbar';
-import api from '../../lib/api';
+import api from '../../../lib/api';
 
 export default function AnalyticsDashboard() {
   const [period, setPeriod] = useState('today');
@@ -49,10 +48,8 @@ export default function AnalyticsDashboard() {
   const maxRevenue = Math.max(...salesData.map(d => d.revenue), 1);
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar title="Analytics Dashboard" />
-
-      <main className="p-6">
+    <div className="p-6">
+      <h1 className="text-2xl font-display font-bold text-foreground mb-6">Analytics Dashboard</h1>
         <div className="flex items-center justify-between mb-6">
           <div className="flex gap-2">
             {['today', 'week', 'month'].map((p) => (
@@ -179,7 +176,6 @@ export default function AnalyticsDashboard() {
             </div>
           </>
         )}
-      </main>
     </div>
   );
 }

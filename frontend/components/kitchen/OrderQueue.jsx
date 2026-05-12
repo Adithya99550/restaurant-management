@@ -12,7 +12,7 @@ export default function OrderQueue({ onNewOrder }) {
     try {
       const res = await api.get('/orders/active');
       const kitchenOrders = res.data.data.filter(
-        (order) => order.status !== 'SERVED' && order.status !== 'PAID' && order.status !== 'BILLED'
+        (order) => order.status !== 'PENDING' && order.status !== 'SERVED' && order.status !== 'PAID' && order.status !== 'BILLED'
       );
       setOrders(kitchenOrders);
     } catch (error) {
@@ -27,7 +27,7 @@ export default function OrderQueue({ onNewOrder }) {
   }, []);
 
   useEffect(() => {
-    if (onNewOrder) {
+    if (onNewOrder && onNewOrder.status !== 'PENDING') {
       setOrders((prev) => {
         const exists = prev.find((o) => o.id === onNewOrder.id);
         if (exists) return prev;

@@ -41,7 +41,11 @@ const createOrder = async (req, res) => {
     });
 
     req.io.emit('new_order', result);
-    req.io.to('kitchen').to('cashier').emit('new_order', result);
+    req.io.to('cashier').emit('new_order', result);
+
+    if (result.status !== 'PENDING') {
+      req.io.to('kitchen').emit('new_order', result);
+    }
 
     res.status(201).json({ success: true, data: result });
   } catch (error) {
@@ -123,6 +127,10 @@ const updateOrderStatus = async (req, res) => {
     req.io.emit('order_status_update', order);
     req.io.to('waiter').to('cashier').emit('order_status_update', order);
 
+    if (status === 'CONFIRMED') {
+      req.io.to('kitchen').emit('new_order', order);
+    }
+
     res.json({ success: true, data: order });
   } catch (error) {
     console.error('Update order status error:', error);
@@ -162,7 +170,9 @@ const addOrderItems = async (req, res) => {
     });
 
     req.io.emit('order_updated', result);
-    req.io.to('kitchen').emit('order_updated', result);
+    if (result.status !== 'PENDING') {
+      req.io.to('kitchen').emit('order_updated', result);
+    }
 
     res.json({ success: true, data: result });
   } catch (error) {
