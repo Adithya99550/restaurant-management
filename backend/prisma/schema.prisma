@@ -1,0 +1,123 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(WAITER)
+  createdAt DateTime @default(now())
+  orders    Order[]
+}
+
+enum Role {
+  ADMIN
+  WAITER
+  KITCHEN
+  CASHIER
+}
+
+model Table {
+  id        Int         @id @default(autoincrement())
+  number    Int         @unique
+  status    TableStatus @default(AVAILABLE)
+  orders    Order[]
+  bills     Bill[]
+}
+
+enum TableStatus {
+  AVAILABLE
+  ORDERING
+  PREPARING
+  READY
+  SERVED
+  BILLING
+}
+
+model MenuItem {
+  id          Int         @id @default(autoincrement())
+  name        String
+  category    String
+  price       Float
+  description String?
+  isAvailable Boolean     @default(true)
+  orderItems  OrderItem[]
+}
+
+model Order {
+  id         Int         @id @default(autoincrement())
+  tableId    Int
+  waiterId   Int
+  status     OrderStatus @default(PENDING)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  table      Table       @relation(fields: [tableId], references: [id])
+  waiter     User        @relation(fields: [waiterId], references: [id])
+  orderItems OrderItem[]
+  bill       Bill?
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PREPARING
+  READY
+  SERVED
+  BILLED
+  PAID
+}
+
+model OrderItem {
+  id         Int        @id @default(autoincrement())
+  orderId    Int
+  menuItemId Int
+  quantity   Int        @default(1)
+  status     ItemStatus @default(PENDING)
+  order      Order      @relation(fields: [orderId], references: [id])
+  menuItem   MenuItem   @relation(fields: [menuItemId], references: [id])
+}
+
+enum ItemStatus {
+  PENDING
+  PREPARING
+  DONE
+}
+
+model Bill {
+  id          Int         @id @default(autoincrement())
+  orderId     Int         @unique
+  tableId     Int
+  totalAmount Float
+  status      BillStatus  @default(UNPAID)
+  createdAt   DateTime    @default(now())
+  order       Order       @relation(fields: [orderId], references: [id])
+  table       Table       @relation(fields: [tableId], references: [id])
+  payment     Payment?
+}
+
+enum BillStatus {
+  UNPAID
+  PAID
+}
+
+model Payment {
+  id        Int           @id @default(autoincrement())
+  billId    Int           @unique
+  amount    Float
+  method    PaymentMethod @default(CASH)
+  paidAt    DateTime      @default(now())
+  bill      Bill          @relation(fields: [billId], references: [id])
+}
+
+enum PaymentMethod {
+  CASH
+  CARD
+  UPI
+}

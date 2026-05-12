@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm init *)",
+      "Bash(npm install *)",
+      "Bash(npx prisma *)",
+      "Bash(New-Item -ItemType Directory -Path \"F:\\\\restaurant-management\\\\backend\\\\src\\\\controllers\" -Force)",
+      "Bash(New-Item -ItemType Directory -Path \"F:\\\\restaurant-management\\\\backend\\\\src\\\\middleware\" -Force)",
+      "Bash(New-Item -ItemType Directory -Path \"F:\\\\restaurant-management\\\\backend\\\\src\\\\routes\" -Force)",
+      "Bash(New-Item -ItemType Directory -Path \"F:\\\\restaurant-management\\\\backend\\\\src\\\\socket\" -Force)",
+      "Bash(powershell *)",
+      "Bash(npm run *)",
+      "Bash(Remove-Item *)",
+      "Bash(git log *)",
+      "Bash(git push *)",
+      "Bash(git rm *)",
+      "Bash(git add *)",
+      "Bash(git branch *)",
+      "Bash(git commit *)",
+      "Bash(git checkout *)"
+    ]
+  }
+}
