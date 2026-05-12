@@ -112,7 +112,7 @@ exports.getPopularItems = async (req, res) => {
   try {
     const orders = await prisma.order.findMany({
       where: {
-        status: 'BILLED'
+        status: { in: ['BILLED', 'PAID'] }
       },
       include: {
         orderItems: {
@@ -156,7 +156,7 @@ exports.getWaiterPerformance = async (req, res) => {
       where: { role: 'WAITER' },
       include: {
         orders: {
-          where: { status: 'BILLED' },
+          where: { status: { in: ['BILLED', 'PAID'] } },
           include: {
             orderItems: {
               include: {
@@ -224,7 +224,7 @@ exports.getTableUtilization = async (req, res) => {
 exports.getCategoryBreakdown = async (req, res) => {
   try {
     const orders = await prisma.order.findMany({
-      where: { status: 'BILLED' },
+      where: { status: { in: ['BILLED', 'PAID'] } },
       include: {
         orderItems: {
           include: { menuItem: true }

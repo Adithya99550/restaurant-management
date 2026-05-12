@@ -110,50 +110,58 @@ export default function AnalyticsDashboard() {
 
               <div className="bg-card rounded-xl p-6 border border-border">
                 <h3 className="text-lg font-semibold mb-4">Category Breakdown</h3>
-                <div className="space-y-3">
-                  {categoryData.map((cat, index) => {
-                    const totalRevenue = categoryData.reduce((sum, c) => sum + c.revenue, 0);
-                    const percentage = totalRevenue > 0 ? (cat.revenue / totalRevenue) * 100 : 0;
-                    const colors = ['bg-blue-500', 'bg-green-500', 'bg-yellow-500', 'bg-red-500', 'bg-purple-500'];
-                    return (
-                      <div key={index}>
-                        <div className="flex justify-between mb-1">
-                          <span className="text-sm text-foreground">{cat.category}</span>
-                          <span className="text-sm text-muted-foreground">{formatCurrency(cat.revenue)} ({percentage.toFixed(1)}%)</span>
+                {categoryData.length === 0 ? (
+                  <p className="text-muted-foreground text-center py-4">No data available</p>
+                ) : (
+                  <div className="space-y-3">
+                    {categoryData.map((cat, index) => {
+                      const totalRevenue = categoryData.reduce((sum, c) => sum + c.revenue, 0);
+                      const percentage = totalRevenue > 0 ? (cat.revenue / totalRevenue) * 100 : 0;
+                      const colors = ['bg-blue-500', 'bg-green-500', 'bg-yellow-500', 'bg-red-500', 'bg-purple-500'];
+                      return (
+                        <div key={index}>
+                          <div className="flex justify-between mb-1">
+                            <span className="text-sm text-foreground">{cat.category}</span>
+                            <span className="text-sm text-muted-foreground">{formatCurrency(cat.revenue)} ({percentage.toFixed(1)}%)</span>
+                          </div>
+                          <div className="h-2 bg-muted rounded-full overflow-hidden">
+                            <div
+                              className={`h-full ${colors[index % colors.length]} rounded-full transition-all duration-500`}
+                              style={{ width: `${percentage}%` }}
+                            ></div>
+                          </div>
                         </div>
-                        <div className="h-2 bg-muted rounded-full overflow-hidden">
-                          <div
-                            className={`h-full ${colors[index % colors.length]} rounded-full transition-all duration-500`}
-                            style={{ width: `${percentage}%` }}
-                          ></div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="bg-card rounded-xl p-6 border border-border">
                 <h3 className="text-lg font-semibold mb-4">Popular Items</h3>
-                <div className="space-y-3">
-                  {popularItems.slice(0, 5).map((item, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <span className="text-lg font-bold text-muted-foreground">#{index + 1}</span>
-                        <div>
-                          <p className="font-medium text-foreground">{item.name}</p>
-                          <p className="text-xs text-muted-foreground">{item.category}</p>
+                {popularItems.length === 0 ? (
+                  <p className="text-muted-foreground text-center py-4">No data available</p>
+                ) : (
+                  <div className="space-y-3">
+                    {popularItems.slice(0, 5).map((item, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <span className="text-lg font-bold text-muted-foreground">#{index + 1}</span>
+                          <div>
+                            <p className="font-medium text-foreground">{item.name}</p>
+                            <p className="text-xs text-muted-foreground">{item.category}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-semibold text-foreground">{item.quantity} sold</p>
+                          <p className="text-xs text-muted-foreground">{formatCurrency(item.revenue)}</p>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <p className="font-semibold text-foreground">{item.quantity} sold</p>
-                        <p className="text-xs text-muted-foreground">{formatCurrency(item.revenue)}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <div className="bg-card rounded-xl p-6 border border-border">

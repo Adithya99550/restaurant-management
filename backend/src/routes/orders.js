@@ -15,7 +15,7 @@ const {
 
 router.post('/', authMiddleware, roleMiddleware('WAITER', 'ADMIN'), socketMiddleware, createOrder);
 router.get('/table/:tableId', authMiddleware, getOrdersByTable);
-router.get('/active', authMiddleware, roleMiddleware('KITCHEN', 'CASHIER', 'WAITER'), getActiveOrders);
+router.get('/active', authMiddleware, roleMiddleware('KITCHEN', 'CASHIER', 'WAITER', 'ADMIN'), getActiveOrders);
 router.patch('/:id/status', authMiddleware, roleMiddleware('WAITER', 'KITCHEN', 'ADMIN'), socketMiddleware, updateOrderStatus);
 router.post('/:id/items', authMiddleware, roleMiddleware('WAITER', 'ADMIN'), socketMiddleware, addOrderItems);
 router.patch('/:id/items/:itemId', authMiddleware, roleMiddleware('WAITER', 'KITCHEN', 'ADMIN'), socketMiddleware, updateOrderItem);

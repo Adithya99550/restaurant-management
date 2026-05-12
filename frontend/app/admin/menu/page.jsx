@@ -34,10 +34,16 @@ export default function MenuManagement() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const data = {
+        name: formData.name,
+        category: formData.category,
+        price: parseFloat(formData.price),
+        description: formData.description
+      };
       if (editingItem) {
-        await api.put(`/menu/${editingItem.id}`, formData);
+        await api.put(`/menu/${editingItem.id}`, data);
       } else {
-        await api.post('/menu', formData);
+        await api.post('/menu', data);
       }
       fetchMenu();
       closeModal();
