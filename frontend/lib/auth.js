@@ -30,7 +30,7 @@ export const redirectByRole = (role) => {
     WAITER: '/waiter',
     KITCHEN: '/kitchen',
     CASHIER: '/cashier',
-    ADMIN: '/cashier',
+    ADMIN: '/admin/analytics',
   };
   return routes[role] || '/login';
 };

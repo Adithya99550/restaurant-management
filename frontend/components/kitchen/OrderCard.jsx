@@ -43,7 +43,7 @@ export default function OrderCard({ order, onUpdate }) {
     }
   };
 
-  const isPending = order.status === 'PENDING';
+  const isPending = order.status === 'PENDING' || order.status === 'CONFIRMED';
   const isPreparing = order.status === 'PREPARING';
 
   return (

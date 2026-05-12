@@ -11,6 +11,7 @@ const tableRoutes = require('./routes/tables');
 const orderRoutes = require('./routes/orders');
 const menuRoutes = require('./routes/menu');
 const billRoutes = require('./routes/bills');
+const analyticsRoutes = require('./routes/analytics');
 const { initializeSocket } = require('./socket/socketHandler');
 
 const app = express();
@@ -34,6 +35,7 @@ app.use('/api/tables', tableRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/menu', menuRoutes);
 app.use('/api/bills', billRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ success: true, message: 'Restaurant API is running' });
